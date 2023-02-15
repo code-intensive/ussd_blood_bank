@@ -5,7 +5,6 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
 
 
 # API versioning
@@ -14,8 +13,10 @@ API_VERSION = "v1"
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 APPS_DIR = BASE_DIR.joinpath("app").as_posix()
+ENV_FILE_PATH = BASE_DIR.joinpath(".env").as_posix()
 sys.path.insert(0, APPS_DIR)
 
+load_dotenv(ENV_FILE_PATH)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
