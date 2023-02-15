@@ -18,14 +18,31 @@ def ussd(request):
 
     if text == "":
         # This is the first request. Note how we start the response with CON
-        response.write("CON What would you want to check \n")
-        response.write("1. My Account \n")
-        response.write("2. My phone number")
+        response.write("CON What would you want to do? \n")
+        response.write("1. Request blood \n")
+        response.write("2. Donate blood \n")
 
     elif text == "1":
         # Business logic for first level response
-        response.write("CON Choose account information you want to view \n")
-        response.write("1. Account number")
+        name = request.session.get("name", None)
+        mobile = request.session.get("mobile", None)
+        address = request.session.get("address", None)
+        if not name:
+            response.write("CON Enter your name \n")
+        elif not mobile:
+            response.write("CON Enter your phone number \n")
+        elif not address:
+            response.write("CON Enter your address \n")
+        else:
+            response.write("CON Select blood type")
+            response.write("1) O Positive")
+            response.write("2) O Negative")
+            response.write("3) A Positive")
+            response.write("4) A Negative")
+            response.write("5) B Positive")
+            response.write("6) B Negative")
+            response.write("7) AB Positive")
+            response.write("8) AB Negative")
 
     elif text == "2":
         # This is a terminal request. Note how we start the response with END
