@@ -23,32 +23,37 @@ def ussd(request: HttpRequest):
     response = HttpResponse(content_type=CONTENT_TYPE)
 
     if request.session.get("requesting", None):
-        response.write("CON Select detail to enter")
         if not name:
-            response.write("10. Name")
-        if not mobile:
-            response.write("11. Mobile Number")
-        if not address:
-            response.write("12. Address")
-        if not blood_type:
-            response.write("13. Blood type")
-        if not quantity:
-            response.write("14. Quantity (in pints)")
+            request.session["name"] = text.strip().title()
+            response.write("CON Enter mobile")
+        elif not mobile:
+            request.session["mobile"] = text.strip().title()
+            response.write(f"END Your name is { name } and your number is { mobile }")
+            response.write("You were the recipient")
 
-    if text == "":
-        # This is the first request. Note how we start the response with CON
-        response.write("CON What would you want to do? \n")
-        response.write("1. Request blood \n")
-        response.write("2. Donate blood \n")
-
-    elif text == "1":
-        request.session["requesting"] = 1
-    elif text == "2":
-        request.session["donating"] = 1
-    elif text in ["1", "1*10"]:
-        request.session["name"] = text.strip().lower()
+    elif request.session.get("donating", None):
+        if not name:
+            request.session["name"] = text.strip().title()
+            response.write("CON Enter mobile")
+        elif not mobile:
+            request.session["mobile"] = text.strip().title()
+            response.write(f"END Your name is { name } and your number is { mobile } \n")
+            response.write("You donated")
     else:
-        response.write("END Invalid choice")
+        if text == "":
+            # This is the first request. Note how we start the response with CON
+            response.write("CON What would you want to do? \n")
+            response.write("1. Request blood \n")
+            response.write("2. Donate blood \n")
+
+        elif text == "1":
+            request.session["requesting"] = 1
+            response.write("CON Enter name")
+        elif text == "2":
+            request.session["donating"] = 1
+            response.write("CON Enter name")
+        else:
+            response.write("END Invalid choice")
 
     # Send the response back to the API
     return response 
