@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpRequest
+from django.contrib.sessions.models import Session
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -10,14 +11,16 @@ CONTENT_TYPE = "text/plain"
 @require_POST
 def ussd(request: HttpRequest):
     text = request.POST.get("text", "default")
-    session_id = request.session.get("sessionId", None)
+    session_id = request.POST.get("sessionId", None)
     service_code = request.POST.get("serviceCode", None)
     phone_number = request.POST.get("phoneNumber", None)
-    name = request.session.get("name", None)
-    mobile = request.session.get("mobile", None)
-    address = request.session.get("address", None)
-    quantity = request.session.get("quantity", None)
-    blood_type = request.session.get("blood_type", None)
+
+    session = Session.objects.get_or_create(key=session_id)
+    name = session.get("name", None)
+    mobile = session.get("mobile", None)
+    address = session.get("address", None)
+    quantity = session.get("quantity", None)
+    blood_type = session.get("blood_type", None)
 
     response = HttpResponse(content_type=CONTENT_TYPE)
     if text == "":
@@ -32,7 +35,7 @@ def ussd(request: HttpRequest):
         word_count = len(request_history)
 
         if word_count < 4:
-            response.write("CON Kindly provide your: \n")
+            response.write("CON Blood Request: \n")
 
         if word_count == 1:
             response.write("Enter your name:")
