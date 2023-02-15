@@ -8,10 +8,9 @@ CONTENT_TYPE = "text/plain"
 @csrf_exempt
 @require_POST
 def ussd(request):
-    print(request.POST)
     # Read the variables sent via POST from our API
     text = request.POST.get("text", "default")
-    session_id = request.SESSION.get("sessionId", None)
+    session_id = request.session.get("sessionId", None)
     service_code = request.POST.get("serviceCode", None)
     phone_number = request.POST.get("phoneNumber", None)
 
