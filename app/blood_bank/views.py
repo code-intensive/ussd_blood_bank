@@ -28,21 +28,34 @@ def ussd(request):
         mobile = request.session.get("mobile", None)
         address = request.session.get("address", None)
         if not name:
-            response.write("CON Enter your name \n")
+            if text != "1":
+                request.session["name"] = text.strip().title()
+                response.write("CON Enter your mobile \n")
+            else:
+                response.write("CON Enter your name \n")
         elif not mobile:
-            response.write("CON Enter your phone number \n")
-        elif not address:
-            response.write("CON Enter your address \n")
+            if text != "1":
+                request.session["mobile"] = text.strip()
+                response.write("CON Enter your address \n")
+            else:
+                response.write("CON Enter your mobile \n")
         else:
-            response.write("CON Select blood type")
-            response.write("1) O Positive")
-            response.write("2) O Negative")
-            response.write("3) A Positive")
-            response.write("4) A Negative")
-            response.write("5) B Positive")
-            response.write("6) B Negative")
-            response.write("7) AB Positive")
-            response.write("8) AB Negative")
+            response.write(f"END Your name is { name } and your mobile is { mobile }")
+        # elif not address:
+        #     if text != "1":
+        #         request.session["address"] = text.strip().capitalize()
+        #         response.write("CON Enter your mobile \n")
+        #     else:
+        #         response.write("CON Select blood type")
+        #         response.write("1) O Positive")
+        #         response.write("2) O Negative")
+        #         response.write("3) A Positive")
+        #         response.write("4) A Negative")
+        #         response.write("5) B Positive")
+        #         response.write("6) B Negative")
+        #         response.write("7) AB Positive")
+        #         response.write("8) AB Negative")
+        # else:
 
     elif text == "2":
         # This is a terminal request. Note how we start the response with END
