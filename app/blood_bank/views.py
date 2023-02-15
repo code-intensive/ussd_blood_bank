@@ -2,14 +2,13 @@ from django.http import HttpResponse, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
+LAST_INPUT = -1
 CONTENT_TYPE = "text/plain"
 
 
 @csrf_exempt
 @require_POST
 def ussd(request: HttpRequest):
-    # Read the variables sent via POST from our API
-    print(request)
     text = request.POST.get("text", "default")
     session_id = request.session.get("sessionId", None)
     service_code = request.POST.get("serviceCode", None)
@@ -21,39 +20,37 @@ def ussd(request: HttpRequest):
     blood_type = request.session.get("blood_type", None)
 
     response = HttpResponse(content_type=CONTENT_TYPE)
+    if text == "":
+        # This is the first request. Note how we start the response with CON
+        response.write("CON Welcome to USSD Blood Bank Service")
+        response.write("What would you want to do? \n")
+        response.write("1. Request blood \n")
+        response.write("2. Donate blood \n")
 
-    if request.session.get("requesting", None):
-        if not name:
-            request.session["name"] = text.strip().title()
-            response.write("CON Enter mobile")
-        elif not mobile:
-            request.session["mobile"] = text.strip().title()
-            response.write(f"END Your name is { name } and your number is { mobile }")
-            response.write("You were the recipient")
+    elif text.startswith("1"):
+        request_history = text.split("*")
+        word_count = len(request_history)
 
-    elif request.session.get("donating", None):
-        if not name:
-            request.session["name"] = text.strip().title()
-            response.write("CON Enter mobile")
-        elif not mobile:
-            request.session["mobile"] = text.strip().title()
-            response.write(f"END Your name is { name } and your number is { mobile } \n")
-            response.write("You donated")
+        if word_count < 4:
+            response.write("CON Kindly provide your: \n")
+
+        if word_count == 1:
+            response.write("Enter your name:")
+        elif word_count == 2:
+            request.session["name"] = request_history[LAST_INPUT]
+            response.write("Enter your mobile:")
+        elif word_count == 3:
+            request.session["mobile"] = request_history[LAST_INPUT]
+            response.write("Enter your address:")
+        elif word_count == 4:
+            request.session["address"] = request_history[LAST_INPUT]
+            response.write(f"END { name= }, { mobile= }, { address= }, { blood_type= }")
+
+    elif text == "2":
+        request.session["donating"] = 1
+        response.write("CON Enter name")
     else:
-        if text == "":
-            # This is the first request. Note how we start the response with CON
-            response.write("CON What would you want to do? \n")
-            response.write("1. Request blood \n")
-            response.write("2. Donate blood \n")
-
-        elif text == "1":
-            request.session["requesting"] = 1
-            response.write("CON Enter name")
-        elif text == "2":
-            request.session["donating"] = 1
-            response.write("CON Enter name")
-        else:
-            response.write("END Invalid choice")
+        response.write("END Invalid choice")
 
     # Send the response back to the API
     return response 
