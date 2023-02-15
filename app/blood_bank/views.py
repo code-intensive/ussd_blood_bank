@@ -9,6 +9,7 @@ CONTENT_TYPE = "text/plain"
 @csrf_exempt
 @require_POST
 def ussd(request: HttpRequest) -> HttpResponse:
+    print(request.POST)
     text = request.POST.get("text", "default")
     session_id = request.POST.get("sessionId", None)
     service_code = request.POST.get("serviceCode", None)
@@ -25,6 +26,7 @@ def ussd(request: HttpRequest) -> HttpResponse:
     elif text.startswith("1"):
         request_history = text.split("*")
         word_count = len(request_history)
+        print(request_history)
 
         if word_count < 4:
             response.write("CON Blood Request: \n")
