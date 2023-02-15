@@ -1,5 +1,4 @@
 from django.http import HttpResponse, HttpRequest
-from django.contrib.sessions.models import Session
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
@@ -9,18 +8,22 @@ CONTENT_TYPE = "text/plain"
 
 @csrf_exempt
 @require_POST
-def ussd(request: HttpRequest):
+def ussd(request: HttpRequest) -> HttpResponse:
     text = request.POST.get("text", "default")
     session_id = request.POST.get("sessionId", None)
     service_code = request.POST.get("serviceCode", None)
     phone_number = request.POST.get("phoneNumber", None)
 
-    session = Session.objects.get_or_create(key=session_id)
-    name = session.get("name", None)
-    mobile = session.get("mobile", None)
-    address = session.get("address", None)
-    quantity = session.get("quantity", None)
-    blood_type = session.get("blood_type", None)
+    session = request.session
+    session.setdefault("name", None)
+    session.setdefault("mobile", None)
+    session.setdefault("address", None)
+    session.setdefault("quantity", None)
+    session.setdefault("blood_type", None)
+
+    if not session_id:
+        # When session ID is not provided, set it to None to generate a new session key
+        session_id = None
 
     response = HttpResponse(content_type=CONTENT_TYPE)
     if text == "":
@@ -40,20 +43,23 @@ def ussd(request: HttpRequest):
         if word_count == 1:
             response.write("Enter your name:")
         elif word_count == 2:
-            request.session["name"] = request_history[LAST_INPUT]
+            session["name"] = request_history[LAST_INPUT]
             response.write("Enter your mobile:")
         elif word_count == 3:
-            request.session["mobile"] = request_history[LAST_INPUT]
+            session["mobile"] = request_history[LAST_INPUT]
             response.write("Enter your address:")
         elif word_count == 4:
-            request.session["address"] = request_history[LAST_INPUT]
-            response.write(f"END { name= }, { mobile= }, { address= }, { blood_type= }")
+            session["address"] = request_history[LAST_INPUT]
+            session.save()
+            response.write(f"END {session['name']}, {session['mobile']}, {session['address']}, {session['blood_type']}")
 
     elif text == "2":
-        request.session["donating"] = 1
+        session["donating"] = 1
         response.write("CON Enter name")
     else:
         response.write("END Invalid choice")
 
+    session.save()  # Save the session data
+    return response
+
     # Send the response back to the API
-    return response 
