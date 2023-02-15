@@ -38,7 +38,7 @@ def ussd(request: HttpRequest) -> HttpResponse:
         elif word_count == 3:
             response.write("Enter your address:")
         elif word_count == 4:
-            response.write(f"END {request_history[1]}, {request_history[2]}, {request_history[3]}, {request_history[4]}")
+            response.write(f"END name={request_history[1]}\n mobile={request_history[2]}\n address={request_history[3]}")
 
     elif text == "2":
         response.write("CON Enter name")
