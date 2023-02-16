@@ -14,6 +14,7 @@ class BloodTypes(models.TextChoices):
     AB_POSITIVE = ("ab_positive", _("AB Positive"))
     AB_NEGATIVE = ("ab_negative", _("AB Negative"))
 
+
 class BankedBlood(models.Model):
     amount_in_pints = models.PositiveSmallIntegerField(_("amount in pints"))
     blood_type = models.CharField(
@@ -36,4 +37,3 @@ class BloodRequest(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.request_id}"
-    

@@ -23,7 +23,9 @@ def ussd(request: HttpRequest) -> HttpResponse:
         response.write("2. Donate blood \n")
 
     elif text[0] in ["1", "2"]:
-        request_history = [request_input for request_input in text.split("*") if request_input]
+        request_history = [
+            request_input for request_input in text.split("*") if request_input
+        ]
         word_count = len(request_history)
 
         if word_count == NAME_INDEX:
@@ -65,7 +67,9 @@ def ussd(request: HttpRequest) -> HttpResponse:
         elif word_count == END_OF_REQUEST_INDEX:
             proceed = request_history[CONFIRMED_INTEGRITY] == "1"
             if proceed:
-                blood_request = create_request_from_history(request_history, requesting_number)
+                blood_request = create_request_from_history(
+                    request_history, requesting_number
+                )
                 response.write("END Request created successful \n")
                 response.write(blood_request.request_id)
             else:

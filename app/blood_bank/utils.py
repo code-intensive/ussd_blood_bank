@@ -8,6 +8,7 @@ def generate_request_id(requesting: bool = True) -> str:
     hex = token_hex(4)
     return f"R_{hex}" if requesting else f"D_{hex}"
 
+
 def create_request_from_history(
     request_history: list[str], requesting_number: str
 ) -> BloodRequest:

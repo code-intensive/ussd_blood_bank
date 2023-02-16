@@ -6,7 +6,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 
-
 # API versioning
 API_VERSION = "v1"
 
