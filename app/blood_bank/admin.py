@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from blood_bank.models import BloodRequest, BankedBlood
+
+admin.site.register((BloodRequest, BankedBlood))
+
