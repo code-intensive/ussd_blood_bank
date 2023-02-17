@@ -98,7 +98,7 @@ def ussd(request: HttpRequest) -> HttpResponse:
             response.write(
                 "CON Request History \n\n"
                 "1. View requests \n"
-                "2. Find request or appointment"
+                "2. Find request or appointment\n"
                 "3. View appointments \n"
                 "4. Cancel request \n"
                 "5. Cancel appointment"
