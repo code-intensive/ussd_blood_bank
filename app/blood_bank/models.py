@@ -77,3 +77,26 @@ class BloodRequest(models.Model):
 
     def __str__(self):
         return f"{self.full_name} - {self.request_id}"
+
+
+class Person(models.Model):
+    class Meta:
+        abstract = True
+
+    full_name = models.CharField(_("full name"), max_length=60)
+    amount_in_pints = models.PositiveSmallIntegerField(_("amount in pints"))
+    blood_type = models.CharField(
+        _("blood type"), max_length=50, choices=BloodType.choices
+    )
+
+
+class Donor(Person):
+    date_donated = models.DateTimeField(auto_now_add=True)
+
+
+class Recipient(Person):
+    date_received = models.DateTimeField(auto_now_add=True)
+
+
+class Appointment(models.Model):
+    scheduled_for = models.DateTimeField()
