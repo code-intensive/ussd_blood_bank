@@ -8,6 +8,7 @@ __all__ = (
     "QUANTITY_INDEX",
     "DATA_INTEGRITY",
     "BLOOD_TYPES_MAP",
+    "INT_BLOOD_TYPES_MAP",
     "BLOOD_TYPE_INDEX",
     "LAST_INPUT_INDEX",
     "ACTUAL_BLOOD_TYPE",
@@ -28,12 +29,12 @@ HOSPITAL_INDEX = 6
 LAST_INPUT_INDEX = -1
 ACTUAL_BLOOD_TYPE = 0
 CONFIRMED_INTEGRITY = 7
-MAX_REQUEST_HISTORY = 10
+MAX_REQUEST_HISTORY = 5
 END_OF_REQUEST_INDEX = 8
 CONTENT_TYPE = "text/plain"
 HUMAN_READABLE_BLOOD_TYPE = 1
 
-BLOOD_TYPES_MAP = {
+INT_BLOOD_TYPES_MAP = {
     1: ("o_positive", "O Positive"),
     2: ("o_negative", "O Negative"),
     3: ("a_positive", "A Positive"),
@@ -42,4 +43,15 @@ BLOOD_TYPES_MAP = {
     6: ("b_negative", "B Negative"),
     7: ("ab_positive", "AB Positive"),
     8: ("ab_negative", "AB Negative"),
+}
+
+BLOOD_TYPES_MAP = {
+    "o_positive": "O Positive",
+    "o_negative": "O Negative",
+    "a_positive": "A Positive",
+    "a_negative": "A Negative",
+    "b_positive": "B Positive",
+    "b_negative": "B Negative",
+    "ab_positive": "AB Positive",
+    "ab_negative": "AB Negative",
 }
